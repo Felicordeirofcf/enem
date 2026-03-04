@@ -1,0 +1,39 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model Professor {
+  id     String  @id @default(cuid())
+  nome   String
+  email  String  @unique
+  senha  String
+  alunos Aluno[]
+}
+
+model Aluno {
+  id          String     @id @default(cuid())
+  nome        String
+  login       String     @unique
+  senhaTemp   String
+  isActive    Boolean    @default(true)
+  professorId String
+  professor   Professor  @relation(fields: [professorId], references: [id])
+  respostas   Resposta[] 
+  createdAt   DateTime   @default(now())
+}
+
+// APENAS UM MODELO 'Resposta' AGORA, COM O CAMPO 'ano'
+model Resposta {
+  id        String   @id @default(cuid())
+  acertou   Boolean
+  questaoId String
+  ano       String   
+  alunoId   String
+  aluno     Aluno    @relation(fields: [alunoId], references: [id])
+  createdAt DateTime @default(now())
+}
